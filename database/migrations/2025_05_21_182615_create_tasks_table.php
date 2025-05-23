@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->default('medium');
-            $table->enum('status', ['todo', 'in_progress', 'done', 'cancelled'])->default('todo');
+            $table->enum('status', ['todo', 'in_progress', 'done', 'qa'])->default('todo');
             $table->date('due_date')->nullable();
             $table->time('due_time')->nullable();
-            $table->boolean('is_looked')->default(false);
+            $table->boolean('is_locked')->default(false);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');       
             $table->timestamps();
 

@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTaskRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,17 +22,18 @@ class StoreTaskRequest extends FormRequest
      */
     public function rules(): array
     {
-        
         return [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'priority'=>'nullable',
-            'status' => 'required|in:todo,in_progress,qa,done',
-            'due_date' => 'nullable',
-            'due_time' => 'nullable',
-            'is_locked' => 'nullable',
-            'user_id' => 'required|exists:users,id',
-        ];
+            'name' => 'required|string|max:255',
 
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($this->user?->id),
+            ],
+            'password' => 'nullable|min:6',
+
+            'role' => 'required|exists:roles,name',
+            'permissions' => 'required|array',
+        ];
     }
 }

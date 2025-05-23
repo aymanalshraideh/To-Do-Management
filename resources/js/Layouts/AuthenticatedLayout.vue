@@ -30,8 +30,9 @@ const showingSidebar = ref(false);
 
             <nav class="mt-4 space-y-2 px-4 flex flex-col">
                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">Dashboard</NavLink>
-                <NavLink :href="route('users.index')" :active="route().current('users.index')">Users</NavLink>
-                <NavLink :href="route('roles.index')" :active="route().current('roles.index')">Roles</NavLink>
+                <NavLink :href="route('admin.users.index')" :active="route().current('admin.users.index')">Users</NavLink>
+                <NavLink :href="route('admin.tasks.index')" :active="route().current('admin.tasks.index')">Tasks</NavLink>
+               
                 <!-- Add more NavLink items here -->
             </nav>
         </aside>

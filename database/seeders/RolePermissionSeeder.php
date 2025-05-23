@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
+
 
 class RolePermissionSeeder extends Seeder
 {
@@ -15,18 +17,27 @@ class RolePermissionSeeder extends Seeder
     public function run(): void
     {
         $adminRole = Role::create(['name' => 'admin']);
-        $userRole = Role::create(['name' => 'user']);
+        Role::create(['name' => 'user']);
+        Permission::create(['name' => 'create user']);
+        Permission::create(['name' => 'edit user']);
+        Permission::create(['name' => 'remove user']);
+        Permission::create(['name' => 'create task']);
+        Permission::create(['name' => 'edit task']);
+        Permission::create(['name' => 'edit task status']);
+        Permission::create(['name' => 'lock task']);
+        Permission::create(['name' => 'send notification']);
+        $allPermissionNames = Permission::pluck('name')->toArray();
+        $adminRole->givePermissionTo($allPermissionNames);
+        
+        $AdminUser = User::firstOrCreate([
+            'email' => 'aymanshraideh96@gmail.com',
+        ], [
+            'name' => 'Super Admin',
+            'email' => 'aymanshraideh96@gmail.com',
+            'password' => Hash::make('12345678'),
+        ]);
 
-        // Create permissions
-        $editPermission = Permission::create(['name' => 'edit articles']);
-        $viewPermission = Permission::create(['name' => 'view articles']);
-
-        // Assign permissions to roles
-        $adminRole->givePermissionTo($editPermission, $viewPermission);
-        $userRole->givePermissionTo($viewPermission);
-
-        // Assign role to user
-        $user = User::find(1); // Example user with ID 1
-        $user->assignRole('admin');
+        $AdminUser->assignRole($adminRole);
+        $AdminUser->syncPermissions($allPermissionNames);
     }
 }
