@@ -18,8 +18,8 @@ class TaskFactory extends Factory
             'description' => fake()->text(),
             'priority' => 'low',
             'status' => 'todo',
-            'due_date' => Carbon::now()->addDays(3), // ✅ بدل now() بـ Carbon
-            'due_time' => Carbon::now()->format('H:i:s'), // ✅ نفس الشي
+            'due_date' => Carbon::now()->addDays(3),
+            'due_time' => Carbon::now()->format('H:i:s'), 
             'is_locked' => false,
             'user_id' => User::factory(),
         ];

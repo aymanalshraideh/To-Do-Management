@@ -47,7 +47,7 @@ class TaskController extends Controller
     {
 
         $task = $this->service->createTask([...$request->validated()]);
-        Cache::forget('tasks');
+        Cache::tags(['tasks'])->flush();
         return redirect()->route('admin.tasks.index')->with('success', 'Task created');
     }
 
@@ -66,7 +66,7 @@ class TaskController extends Controller
         $this->authorize('update', $task);
 
         $this->service->updateTask($task, $request->validated());
-        Cache::forget('tasks');
+         Cache::tags(['tasks'])->flush();
 
         return redirect()->route('admin.tasks.index')->with('success', 'Task updated');
     }
@@ -76,7 +76,7 @@ class TaskController extends Controller
         $this->authorize('delete', $task);
 
         $this->service->deleteTask($task);
-        Cache::forget('tasks');
+         Cache::tags(['tasks'])->flush();
 
         return redirect()->route('admin.tasks.index')->with('success', 'Task deleted');
     }
@@ -90,7 +90,7 @@ class TaskController extends Controller
         $task->update([
             'status' => $validated['status'],
         ]);
-        Cache::forget('tasks');
+         Cache::tags(['tasks'])->flush();
 
         return response()->json(['message' => 'Status updated successfully']);
     }
@@ -105,7 +105,7 @@ class TaskController extends Controller
             'is_locked' => $request->is_locked,
         ]);
 
-        Cache::forget('tasks');
+         Cache::tags(['tasks'])->flush();
         if ($request->is_locked == 1) {
             return response()->json(['message' => 'Tasks locked successfully.']);
         } else {

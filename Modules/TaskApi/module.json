@@ -1,0 +1,11 @@
+{
+    "name": "TaskApi",
+    "alias": "taskapi",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\TaskApi\\App\\Providers\\TaskApiServiceProvider"
+    ],
+    "files": []
+}
