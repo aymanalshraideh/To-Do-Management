@@ -82,7 +82,7 @@ function updateTaskStatus(taskId, newStatus) {
         })
         .catch((error) => {
             console.error(error)
-            r
+            
             // alert('Something went wrong!')
         })
 }
@@ -133,8 +133,8 @@ onMounted(() => {
 
                         <th class="px-4 py-2 text-left">Title</th>
                         <th class="px-4 py-2 text-left">description</th>
-                        <th class="px-4 py-2 text-left">Status</th>
-                        <th class="px-4 py-2 text-left">Priority</th>
+                         <th class="px-4 py-2 text-left">Priority</th>
+                        <th class="px-4 py-2 text-left">Status</th>                
                         <th class="px-4 py-2 text-center">Actions</th>
 
                     </tr>
@@ -148,7 +148,10 @@ onMounted(() => {
 
                         <td class="px-4 py-2">{{ task.title }}</td>
                         <td class="px-4 py-2">{{ task.description }}</td>
-                        <td class="px-4 py-2 capitalize">
+                  
+
+                        <td class="px-4 py-2 capitalize">{{ task.priority }}</td>
+                              <td class="px-4 py-2 capitalize">
                             <template v-if="hasPermission('edit task status')">
                                 <select class="border rounded p-1 text-sm" :value="task.status"
                                     @change="updateTaskStatus(task.id, $event.target.value)">
@@ -163,8 +166,6 @@ onMounted(() => {
                                 {{ task.status }}
                             </template>
                         </td>
-
-                        <td class="px-4 py-2 capitalize">{{ task.priority }}</td>
                         <td class="px-4 py-2 text-center">
                             <button v-if="hasPermission('edit task')" @click="openEditTaskModal(task)"
                                 class="px-3 py-1 bg-green-500 text-white rounded mr-2">Edit</button>

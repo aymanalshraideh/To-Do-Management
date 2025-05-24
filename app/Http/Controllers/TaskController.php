@@ -24,9 +24,10 @@ class TaskController extends Controller
 
     public function index(): Response
     {
-        $cachedTasks = Cache::remember('tasks', now()->addMinutes(10), function () {
+        $cachedTasks = Cache::tags(['tasks'])->remember('tasks', now()->addMinutes(10), function () {
             return Task::with('user')->latest()->get();
         });
+
         $tasks = TaskResource::collection($cachedTasks);
 
         $users = User::select('id', 'name')->get();
@@ -44,7 +45,7 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request): RedirectResponse
     {
- 
+
         $task = $this->service->createTask([...$request->validated()]);
         Cache::forget('tasks');
         return redirect()->route('admin.tasks.index')->with('success', 'Task created');

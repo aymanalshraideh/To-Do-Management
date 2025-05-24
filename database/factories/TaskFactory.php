@@ -3,21 +3,25 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
+use Carbon\Carbon; // ✅ أضف هذا
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Task>
  */
 class TaskFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'title' => fake()->name(),
+            'description' => fake()->text(),
+            'priority' => 'low',
+            'status' => 'todo',
+            'due_date' => Carbon::now()->addDays(3), // ✅ بدل now() بـ Carbon
+            'due_time' => Carbon::now()->format('H:i:s'), // ✅ نفس الشي
+            'is_locked' => false,
+            'user_id' => User::factory(),
         ];
     }
 }

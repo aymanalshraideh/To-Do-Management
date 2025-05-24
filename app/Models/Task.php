@@ -14,8 +14,5 @@ class Task extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function scopeStatus($query, $status)
-    {
-        return $query->when($status, fn($q) => $q->where('status', $status));
-    }
+
 }
