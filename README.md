@@ -12,7 +12,8 @@ Open your terminal and run:
 ```bash
 git clone https://github.com/aymanalshraideh/To-Do-Management.git
 cd To-Do-Management
-composer installsp .env.example .env
+composer installs
+cp .env.example .env
 php artisan generate:key
 php artisan migrate --seed
 npm install
