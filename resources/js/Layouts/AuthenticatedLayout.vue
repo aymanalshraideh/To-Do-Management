@@ -1,12 +1,44 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3'
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css';
+const page = usePage()
+const user = page.props.auth.user
+
+
 
 const showingSidebar = ref(false);
+    
+onMounted(() => {
+  const userId = user.id;
+console.log(`user.${userId}`);
+
+
+Echo.private(`user.${userId}`)
+    .listen('.user.alert', (e) => {
+        console.log('Private notification:', e.title, e.message);
+          toast.success(`${e.title}: ${e.message}`)
+        // alert(e.title + ": " + e.message);
+    });
+   
+Echo.channel('public.tasks')
+  .listen('.users', (e) => {
+    console.log( e.title, e.message);
+     toast.info(`${e.title}: ${e.message}`);
+       toast.success(`${e.title}: ${e.message}`)
+  })
+
+
+});
+
+
+
 </script>
 
 <template>

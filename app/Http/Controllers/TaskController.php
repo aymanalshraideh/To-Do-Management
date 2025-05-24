@@ -12,10 +12,8 @@ use Illuminate\Http\Request;
 use App\Services\TaskService;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\JsonResponse;
-use App\Http\Requests\TaskRequest;
 use App\Http\Resources\TaskResource;
 use Illuminate\Http\RedirectResponse;
-
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
@@ -46,9 +44,9 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request): RedirectResponse
     {
-        $this->service->createTask([...$request->validated(), 'user_id' => auth()->id()]);
+ 
+        $task = $this->service->createTask([...$request->validated()]);
         Cache::forget('tasks');
-
         return redirect()->route('admin.tasks.index')->with('success', 'Task created');
     }
 
@@ -83,6 +81,7 @@ class TaskController extends Controller
     }
     public function updateStatus(Request $request, Task $task): JsonResponse
     {
+
         $this->authorize('update', $task);
         $validated = $request->validate([
             'status' => ['required', Rule::in(['todo', 'in_progress', 'qa', 'done'])],
@@ -106,7 +105,7 @@ class TaskController extends Controller
         ]);
 
         Cache::forget('tasks');
-        if ($request->is_locked==1) {
+        if ($request->is_locked == 1) {
             return response()->json(['message' => 'Tasks locked successfully.']);
         } else {
             return response()->json(['message' => 'Tasks unlocked successfully.']);

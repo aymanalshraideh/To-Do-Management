@@ -5,6 +5,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import TaskModal from '@/Components/Tasks/TaskModal.vue'
 import { usePage } from '@inertiajs/vue3'
 import axios from 'axios'
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css';
 
 const page = usePage()
 const roles = page.props.auth.roles[0]
@@ -33,12 +35,14 @@ function lockSelectedTasks(locked) {
         task_ids: selectedTasks.value
     })
         .then((res) => {
-            alert(res.data.message || 'Selected tasks locked successfully.')
-            refresh()
+            // alert(res.data.message || 'Selected tasks locked successfully.')
+            toast.success(res.data.message || 'Selected tasks locked successfully.')
+
         })
         .catch(error => {
             console.error(error)
-            alert('Failed to lock tasks.')
+            toast.error('Failed to lock tasks.')
+            // alert('Failed to lock tasks.')
         })
 }
 
@@ -61,6 +65,11 @@ function closeModal() {
 function refresh() {
     router.reload()
     closeModal()
+    if (selectedTask.value) {
+        toast.success('Task updated successfully.')
+    } else {
+        toast.success('Task created successfully.')
+    }
 }
 function hasPermission(permission) {
     return permissions.includes(permission)
@@ -68,11 +77,13 @@ function hasPermission(permission) {
 function updateTaskStatus(taskId, newStatus) {
     axios.put(route('admin.tasks.updateStatus', taskId), { status: newStatus })
         .then((response) => {
-            alert(response.data.message || 'Task status updated successfully.')
+            // alert(response.data.message || 'Task status updated successfully.')
+            toast.success(response.data.message || 'Task status updated successfully.')
         })
         .catch((error) => {
             console.error(error)
-            alert('Something went wrong!')
+            r
+            // alert('Something went wrong!')
         })
 }
 
@@ -100,12 +111,12 @@ onMounted(() => {
 
             </div>
         </template>
-        <div class="mb-4 flex">
-            <button @click="lockSelectedTasks(true)" class="bg-red-600 text-white px-4 py-1 rounded"
+        <div class="mb-4 flex" >
+            <button v-if="hasPermission('lock task')" @click="lockSelectedTasks(true)" class="bg-red-600 text-white px-4 py-1 rounded"
                 :disabled="selectedTasks.length === 0">
                 Lock Selected Tasks
             </button>
-            <button @click="lockSelectedTasks(false)" class="bg-green-600 text-white px-4 py-1 rounded"
+            <button v-if="hasPermission('lock task')" @click="lockSelectedTasks(false)" class="bg-green-600 text-white px-4 py-1 rounded"
                 :disabled="selectedTasks.length === 0">
                 UnLock Selected Tasks
             </button>
@@ -116,7 +127,7 @@ onMounted(() => {
             <table class="table-auto w-full mt-4">
                 <thead>
                     <tr>
-                        <th class="px-4 py-2 text-left">
+                        <th class="px-4 py-2 text-left" >
                             <input type="checkbox" @change="toggleSelectAll($event)" />Lock
                         </th>
 
@@ -130,7 +141,7 @@ onMounted(() => {
                 </thead>
                 <tbody>
                     <tr v-for="task in props.tasks.data" :key="task.id" class="border-t">
-                        <td class="px-4 py-2">
+                        <td class="px-4 py-2" >
                             <input type="checkbox" :value="task.id" v-model="selectedTasks" />
                         </td>
 

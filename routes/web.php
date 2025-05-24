@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\NotificationController;
 
 
 /*
@@ -19,6 +21,8 @@ use App\Http\Controllers\ProfileController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Broadcast::routes(['middleware' => ['web', 'auth']]);
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -46,6 +50,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/tasks', TaskController::class)->names('admin.tasks');
     Route::put('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('admin.tasks.updateStatus');
 });
-
+Route::post('/notifications/send', [NotificationController::class, 'send'])->name('notifications.send');
 
 require __DIR__ . '/auth.php';

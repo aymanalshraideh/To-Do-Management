@@ -4,18 +4,23 @@ import { router, Link, Head } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import UserFormModal from '@/Components/Users/UserFormModal.vue'
 import { usePage } from '@inertiajs/vue3'
-
+import NotifyUsersModal from '@/Components/Users/NotifyUsersModal.vue'
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css';
 const page = usePage()
-const roles = page.props.auth.roles[0]
 const permissions = page.props.auth.permissions
+const showModal = ref(false)
+const selectedUser = ref(null)
+const showNotifyModal = ref(false)
+const selectedUserIds = ref([])
+const selectAll = ref(false)
 
 const props = defineProps({
     users: Object,
     roles: Array,
     permissions: Array,
 })
-const showModal = ref(false)
-const selectedUser = ref(null)
+
 
 function deleteUser(id) {
     if (confirm('Are you sure?')) {
@@ -38,6 +43,23 @@ function openEditUserModal(user) {
 function hasPermission(permission) {
     return permissions.includes(permission)
 }
+function toggleSelectAll() {
+    if (selectAll.value) {
+        selectedUserIds.value = props.users.data.map(user => user.id)
+    } else {
+        selectedUserIds.value = []
+    }
+}
+
+function openNotifyModal() {
+    // if (selectedUserIds.value.length === 0) {
+    //     toast.error('Please select at least one user')
+    //     return
+    // }
+
+    showNotifyModal.value = true
+}
+
 </script>
 
 <template>
@@ -52,11 +74,17 @@ function hasPermission(permission) {
                     class="px-4 py-2 bg-blue-500 rounded text-white">+ Add User</button>
             </div>
         </template>
-
+        <button @click="openNotifyModal" class="px-4 py-2 bg-indigo-600 rounded text-white ml-2">
+            Send Notification
+        </button>
         <div class="flex justify-center items-center mt-6 p-5 bg-white rounded shadow-md">
             <table class="table-auto w-full mt-4">
                 <thead>
                     <tr>
+                        <th>
+                            <input type="checkbox" v-model="selectAll" @change="toggleSelectAll" />
+                        </th>
+
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
@@ -67,6 +95,10 @@ function hasPermission(permission) {
                 </thead>
                 <tbody>
                     <tr v-for="user in users.data" :key="user.id">
+                        <td class="text-center">
+                            <input type="checkbox" :value="user.id" v-model="selectedUserIds" />
+                        </td>
+
                         <td class="text-center">{{ user.name }}</td>
                         <td class="text-center">{{ user.email }}</td>
                         <td class="text-center">
@@ -97,7 +129,8 @@ function hasPermission(permission) {
                 </tbody>
             </table>
         </div>
-    </AuthenticatedLayout>
 
+    </AuthenticatedLayout>
+    <NotifyUsersModal v-model="showNotifyModal" :users="props.users.data" :selected-ids="selectedUserIds" />
     <UserFormModal v-model="showModal" :user="selectedUser" :permissions="props.permissions" :roles="props.roles" />
 </template>
